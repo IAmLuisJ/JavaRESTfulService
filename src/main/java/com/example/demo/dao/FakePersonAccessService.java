@@ -26,4 +26,26 @@ public class FakePersonAccessService {
         return DB.stream().filter(person -> person.getId().equals(id)).findFirst();
     }
 
+    public int deletePersonById(UUID id) {
+        // Optional object has ifPresent() method
+        Optional<Person> maybe = selectPersonById(id);
+        if (maybe.isEmpty()) {
+            return 1;
+        }
+        DB.remove(maybe.get());
+        return 0;
+    }
+
+    public int updatePersonById(UUID id, Person updatedPerson) {
+        // update person
+        Optional<Person> maybe = selectPersonById(id);
+        if (maybe.isEmpty()) {
+            return 1;
+        }
+        // person exists
+        var maybeIdex = DB.indexOf(maybe.get());
+        DB.set(maybeIdex, updatedPerson);
+        return 0;
+    }
+
 }
